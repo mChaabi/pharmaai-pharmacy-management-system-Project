@@ -1,0 +1,195 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="medicaments-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-heart mr-2 text-primary"></i>
+      Médicaments
+    </h1>
+    <button pButton label="Nouveau médicament" icon="pi pi-plus" (click)="ouvrirCreation()"></button>
+  </div>
+
+  <!-- RECHERCHE -->
+  <div class="search-bar">
+    <i class="pi pi-search"></i>
+    <input type="text" pInputText
+      [ngModel]="searchText()"
+      (ngModelChange)="searchText.set($event)"
+      placeholder="Rechercher un médicament..."
+      class="search-input" />
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <p-table
+      [value]="medicamentsFiltres()"
+      [loading]="isLoading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[5,10,25]"
+      stripedRows
+      styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Prix vente</th>
+          <th>Stock</th>
+          <th>Expiration</th>
+          <th>Statut stock</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-m>
+        <tr>
+          <td>
+            <div class="med-name">{{ m.nom }}</div>
+            <div class="med-dci">{{ m.dci }}</div>
+          </td>
+          <td>
+            <p-tag [value]="m.categorie" severity="info"></p-tag>
+          </td>
+          <td class="font-bold">{{ m.prixVente }} MAD</td>
+          <td>{{ m.quantiteStock }} unités</td>
+          <td>{{ m.dateExpiration | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <p-tag
+              [value]="m.quantiteStock <= (m.seuilAlerte || 0) ? 'Critique' : 'Normal'"
+              [severity]="getStockSeverity(m)">
+            </p-tag>
+          </td>
+          <td>
+            <div class="actions">
+              <button pButton icon="pi pi-pencil"
+                class="p-button-sm p-button-text"
+                (click)="ouvrirModification(m)"
+                pTooltip="Modifier">
+              </button>
+              <button pButton icon="pi pi-trash"
+                class="p-button-sm p-button-text p-button-danger"
+                (click)="confirmerSuppression(m)"
+                pTooltip="Supprimer">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Nuevo bloque nativo para la tabla vacía -->
+      <ng-template pTemplate="empty">
+        <tr>
+          <td colspan="7" class="text-center p-4">
+            Aucun médicament trouvé
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- DIALOG FORMULAIRE -->
+  <!-- FORMULAIRE EN BAS DE LA PAGE -->
+ @if (dialogVisible()) {
+  <div class="card mt-4 edit-form-card">
+
+    <!-- CABECERA CORREGIDA SIN @IF EN EL ATTRIBUTO CLASS -->
+    <div class="form-header">
+      <h2>
+        <i class="pi mr-2 text-primary" [class.pi-pencil]="isEditing()" [class.pi-plus]="!isEditing()"></i>
+        @if (isEditing()) { Modifier médicament } @else { Nouveau médicament }
+      </h2>
+      <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-secondary" (click)="dialogVisible.set(false)"></button>
+    </div>
+
+    <div class="form-body" [formGroup]="form">
+
+        <!-- Nom + DCI -->
+        <div class="field-row">
+          <div class="field">
+            <label>Nom *</label>
+            <input pInputText formControlName="nom" placeholder="Ex: Paracétamol 1g" class="w-full" />
+          </div>
+          <div class="field">
+            <label>DCI</label>
+            <input pInputText formControlName="dci" placeholder="Dénomination commune" class="w-full" />
+          </div>
+        </div>
+        <!-- Catégorie + Forme -->
+      <div class="field-row">
+        <div class="field">
+          <label>Catégorie *</label>
+          <p-select
+            [options]="categories"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="categorie"
+            placeholder="Choisir..."
+            [style]="{ 'width': '100%' }"
+            appendTo="body">
+          </p-select>
+        </div>
+        <div class="field">
+          <label>Forme</label>
+          <input pInputText formControlName="forme" placeholder="Comprimé, Sirop..." class="w-full" />
+        </div>
+      </div>
+
+        <!-- Prix vente + Prix achat -->
+        <div class="field-row">
+          <div class="field">
+            <label>Prix vente (MAD) *</label>
+            <p-inputnumber formControlName="prixVente" [min]="0" [minFractionDigits]="2" [style]="{ width: '100%' }"></p-inputnumber>
+          </div>
+          <div class="field">
+            <label>Prix achat (MAD)</label>
+            <p-inputnumber formControlName="prixAchat" [min]="0" [minFractionDigits]="2" [style]="{ width: '100%' }"></p-inputnumber>
+          </div>
+        </div>
+
+        <!-- Stock + Seuil alerte -->
+        <div class="field-row">
+          <div class="field">
+            <label>Quantité stock *</label>
+            <p-inputnumber formControlName="quantiteStock" [min]="0" [showButtons]="true" [style]="{ width: '100%' }"></p-inputnumber>
+          </div>
+          <div class="field">
+            <label>Seuil alerte</label>
+            <p-inputnumber formControlName="seuilAlerte" [min]="0" [showButtons]="true" [style]="{ width: '100%' }"></p-inputnumber>
+          </div>
+        </div>
+
+        <!-- Date expiration + Fabricant -->
+        <div class="field-row">
+          <div class="field">
+            <label>Date expiration</label>
+            <p-datepicker formControlName="dateExpiration"
+              [showIcon]="true" dateFormat="dd/mm/yy"
+              [style]="{ width: '100%' }">
+            </p-datepicker>
+          </div>
+          <div class="field">
+            <label>Fabricant</label>
+            <input pInputText formControlName="fabricant" placeholder="Sanofi, Pfizer..." class="w-full" />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Form Actions Footer -->
+      <div class="form-footer">
+        <p-button label="Annuler" severity="secondary" [outlined]="true" (onClick)="dialogVisible.set(false)"></p-button>
+        <p-button
+          [label]="isEditing() ? 'Modifier' : 'Créer'"
+          icon="pi pi-check"
+          [disabled]="form.invalid"
+          (onClick)="sauvegarder()">
+        </p-button>
+      </div>
+    </div>
+  }
+
+</div>

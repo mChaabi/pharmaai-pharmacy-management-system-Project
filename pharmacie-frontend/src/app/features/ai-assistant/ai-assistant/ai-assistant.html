@@ -1,0 +1,130 @@
+<div class="ai-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-microchip-ai mr-2 text-primary"></i>
+      Assistant Pharmacien AI
+      <span class="groq-badge">Groq</span>
+    </h1>
+    <button pButton label="Effacer le chat"
+      icon="pi pi-trash" severity="secondary"
+      [outlined]="true" (click)="effacerChat()">
+    </button>
+  </div>
+
+  <div class="ai-layout">
+
+    <!-- PANEL GAUCHE : options + questions rapides -->
+    <div class="ai-sidebar">
+
+      <!-- Type de question -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">
+          <i class="pi pi-sliders-h mr-2"></i>Type de question
+        </div>
+        <p-select [options]="typeOptions"
+          optionLabel="label" optionValue="value"
+          [(ngModel)]="typeQuestion"
+          [style]="{ width: '100%' }">
+        </p-select>
+      </div>
+
+      <!-- Questions rapides -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">
+          <i class="pi pi-bolt mr-2"></i>Questions rapides
+        </div>
+        <div class="quick-questions">
+          <button *ngFor="let q of questionsRapides"
+            class="quick-btn"
+            (click)="utiliserQuestionRapide(q)">
+            {{ q }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Aide -->
+      <div class="sidebar-card aide-card">
+        <div class="sidebar-title">
+          <i class="pi pi-info-circle mr-2"></i>Conseils
+        </div>
+        <p class="aide-text">
+          Pour les <b>interactions</b>, séparez les médicaments par des virgules.<br><br>
+          Ex: <i>Warfarine, Aspirine, Ibuprofène</i>
+        </p>
+      </div>
+    </div>
+
+    <!-- PANEL DROIT : chat -->
+    <div class="ai-chat">
+
+      <!-- Messages -->
+      <div class="chat-messages">
+        <div *ngFor="let msg of messages"
+          class="message"
+          [class.message-user]="msg.role === 'user'"
+          [class.message-assistant]="msg.role === 'assistant'">
+
+          <!-- Avatar -->
+          <div class="message-avatar">
+            <i [class]="msg.role === 'user'
+              ? 'pi pi-user'
+              : 'pi pi-microchip-ai'">
+            </i>
+          </div>
+
+          <!-- Contenu -->
+          <div class="message-content">
+            <div class="message-text"
+              [innerHTML]="msg.content.replace('\n', '<br>')">
+            </div>
+            <div class="message-meta">
+              <span class="message-time">
+                {{ msg.timestamp | date:'HH:mm' }}
+              </span>
+              <span *ngIf="msg.dureeMs" class="message-duration">
+                {{ msg.dureeMs }}ms
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div class="message message-assistant" *ngIf="isLoading">
+          <div class="message-avatar">
+            <i class="pi pi-microchip-ai"></i>
+          </div>
+          <div class="message-content">
+            <div class="typing-indicator">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="chat-input">
+        <textarea pTextarea
+          [(ngModel)]="question"
+          (keydown)="onKeyDown($event)"
+          [placeholder]="typeQuestion === 'interaction'
+            ? 'Ex: Warfarine, Aspirine, Metformine...'
+            : 'Posez votre question...'"
+          rows="2"
+          class="chat-textarea"
+          [disabled]="isLoading">
+        </textarea>
+        <button pButton
+          icon="pi pi-send"
+          class="send-btn"
+          [loading]="isLoading"
+          [disabled]="!question.trim()"
+          (click)="envoyer()"
+          pTooltip="Envoyer (Entrée)">
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

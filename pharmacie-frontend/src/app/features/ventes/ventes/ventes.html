@@ -1,0 +1,151 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="ventes-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-shopping-cart mr-2 text-primary"></i>
+      Ventes — Caisse
+    </h1>
+    <button pButton label="Nouvelle vente" icon="pi pi-plus" (click)="ouvrirCaisse()">
+    </button>
+  </div>
+
+  <!-- TABLE VENTES -->
+  <div class="card">
+    <p-table [value]="ventes" [loading]="isLoading" [paginator]="true" [rows]="10" stripedRows
+      styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>N° Facture</th>
+          <th>Patient</th>
+          <th>Date</th>
+          <th>Montant</th>
+          <th>Paiement</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-v>
+        <tr>
+          <td>
+            <span class="facture-num">{{ v.numeroFacture }}</span>
+          </td>
+          <td>
+            <i class="pi pi-user mr-1 text-primary"></i>
+            {{ v.patientNom || 'Anonyme' }}
+          </td>
+          <td>{{ v.dateVente | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td class="montant">{{ v.montantTotal?.toFixed(2) }} MAD</td>
+          <td>
+            <p-tag [value]="v.modePaiement" severity="info"></p-tag>
+          </td>
+          <td>
+            <p-tag [value]="v.statut" [severity]="getStatutSeverity(v.statut)"></p-tag>
+          </td>
+          <td>
+            <button pButton icon="pi pi-times" class="p-button-sm p-button-text p-button-danger"
+              *ngIf="v.statut === 'VALIDEE'" (click)="annulerVente(v)" pTooltip="Annuler la vente">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- DIALOG CAISSE -->
+  <p-dialog header="🛒 Nouvelle vente" [(visible)]="dialogVisible" [modal]="true" [style]="{ width: '700px' }"
+    [draggable]="false">
+
+    <div class="caisse">
+
+      <!-- Sélection patient -->
+      <div class="field">
+        <label><i class="pi pi-user mr-1"></i> Patient</label>
+        <p-select [options]="patientOptions" optionLabel="label" optionValue="value" [(ngModel)]="selectedPatientId"
+          placeholder="Anonyme (optionnel)" [filter]="true" [style]="{ width: '100%' }">
+        </p-select>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Ajout médicament au panier -->
+      <div class="panier-add">
+        <div class="field" style="flex:1">
+          <label><i class="pi pi-heart mr-1"></i> Médicament</label>
+          <p-select [options]="medicamentOptions" optionLabel="label" optionValue="value"
+            [(ngModel)]="selectedMedicamentId" placeholder="Choisir un médicament..." [filter]="true"
+            [style]="{ width: '100%' }">
+          </p-select>
+        </div>
+        <div class="field" style="width: 120px;">
+          <label>Quantité</label>
+          <p-inputnumber [(ngModel)]="selectedQuantite" [min]="1" [showButtons]="true" [style]="{ width: '100%' }">
+          </p-inputnumber>
+        </div>
+        <button pButton icon="pi pi-plus" label="Ajouter" class="p-button-outlined" style="align-self: flex-end;"
+          (click)="ajouterAuPanier()">
+        </button>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Panier -->
+      <div class="panier">
+        <div class="panier-title">
+          <i class="pi pi-shopping-cart mr-2"></i>
+          Panier ({{ panier.length }} article(s))
+        </div>
+
+        <div class="panier-empty" *ngIf="panier.length === 0">
+          <i class="pi pi-inbox"></i>
+          <span>Panier vide</span>
+        </div>
+
+        <div class="panier-ligne" *ngFor="let l of panier; let i = index">
+          <div class="ligne-nom">{{ l.medicamentNom }}</div>
+          <div class="ligne-detail">
+            {{ l.quantite }} × {{ l.prixUnitaire }} MAD
+          </div>
+          <div class="ligne-total">
+            {{ l.sousTotal?.toFixed(2) }} MAD
+          </div>
+          <button pButton icon="pi pi-times" class="p-button-sm p-button-text p-button-danger"
+            (click)="supprimerLigne(i)">
+          </button>
+        </div>
+
+        <!-- Total -->
+        <div class="panier-total" *ngIf="panier.length > 0">
+          <span>TOTAL</span>
+          <span class="total-montant">
+            {{ montantTotal.toFixed(2) }} MAD
+          </span>
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Mode paiement -->
+      <div class="field">
+        <label><i class="pi pi-wallet mr-1"></i> Mode de paiement</label>
+        <p-select [options]="modePaiementOptions" optionLabel="label" optionValue="value" [(ngModel)]="modePaiement"
+          [style]="{ width: '100%' }">
+        </p-select>
+      </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Annuler" severity="secondary" [outlined]="true" (onClick)="dialogVisible = false">
+      </p-button>
+      <p-button label="Valider la vente" icon="pi pi-check" [disabled]="panier.length === 0" (onClick)="validerVente()">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+</div>

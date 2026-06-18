@@ -1,0 +1,154 @@
+.dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+// ─── Header ───────────────────────────────────────────────
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  .page-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 4px;
+  }
+}
+
+// ─── KPI Grid ─────────────────────────────────────────────
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 1200px) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 600px)  { grid-template-columns: repeat(2, 1fr); }
+}
+
+.kpi-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid transparent;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+
+  &:hover { transform: translateY(-2px); }
+
+  .kpi-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center;
+    justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+
+  .kpi-value {
+    font-size: 1.5rem;
+    font-weight: 700; line-height: 1;
+  }
+
+  .kpi-label {
+    font-size: 0.78rem;
+    color: #64748b; margin-top: 3px;
+  }
+
+  &.kpi-blue   { border-color:#3b82f6; .kpi-icon{background:#eff6ff;color:#3b82f6} .kpi-value{color:#3b82f6} }
+  &.kpi-green  { border-color:#22c55e; .kpi-icon{background:#f0fdf4;color:#22c55e} .kpi-value{color:#22c55e} }
+  &.kpi-amber  { border-color:#f59e0b; .kpi-icon{background:#fffbeb;color:#f59e0b} .kpi-value{color:#f59e0b} }
+  &.kpi-red    { border-color:#ef4444; .kpi-icon{background:#fef2f2;color:#ef4444} .kpi-value{color:#ef4444} }
+  &.kpi-purple { border-color:#8b5cf6; .kpi-icon{background:#f5f3ff;color:#8b5cf6} .kpi-value{color:#8b5cf6} }
+  &.kpi-cyan   { border-color:#06b6d4; .kpi-icon{background:#ecfeff;color:#06b6d4} .kpi-value{color:#06b6d4} }
+}
+
+// ─── Content Grid ─────────────────────────────────────────
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
+
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.count-badge {
+  margin-left: auto;
+  background: #fee2e2;
+  color: #ef4444;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+// ─── Alert List ───────────────────────────────────────────
+.alert-list { display: flex; flex-direction: column; gap: 8px; }
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child { border-bottom: none; }
+}
+
+.alert-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%; flex-shrink: 0;
+  &.dot-red   { background: #ef4444; }
+  &.dot-amber { background: #f59e0b; }
+}
+
+.alert-name { font-size: 0.88rem; font-weight: 500; }
+.alert-sub  { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+
+// ─── Ventes List ──────────────────────────────────────────
+.ventes-list { display: flex; flex-direction: column; gap: 8px; }
+
+.vente-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child { border-bottom: none; }
+}
+
+.vente-patient { font-size: 0.88rem; font-weight: 500; }
+.vente-ref     { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; }
+.vente-montant { font-size: 0.9rem; font-weight: 600; color: #22c55e; text-align: right; margin-bottom: 4px; }
+
+// ─── Empty State ──────────────────────────────────────────
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 1.5rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  i { font-size: 1.2rem; }
+}

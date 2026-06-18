@@ -1,0 +1,121 @@
+
+.medicaments-page { max-width: 1400px; margin: 0 auto; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 1rem;
+  i { color: #94a3b8; }
+}
+
+.search-input {
+  border: none !important;
+  outline: none !important;
+  flex: 1;
+  font-size: 0.9rem;
+  box-shadow: none !important;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.med-name { font-weight: 500; font-size: 0.9rem; }
+.med-dci  { font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
+
+.actions { display: flex; gap: 4px; }
+
+// Al final de tu archivo medicaments.scss
+.form-body {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // Controla el espacio entre filas
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 0; // Dejamos que el gap del form-body controle el espacio
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative; // Da estabilidad posicional al campo
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #374151;
+  }
+}
+
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+// Estilos específicos para la tarjeta del formulario inline
+.edit-form-card {
+  animation: slideDown 0.25s ease-out;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .form-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1.25rem;
+    margin-top: 1rem;
+  }
+}
+
+// Animación suave de aparición al hacer clic
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

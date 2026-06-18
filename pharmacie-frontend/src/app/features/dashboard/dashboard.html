@@ -1,0 +1,184 @@
+<div class="dashboard">
+
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <div>
+      <h1 class="page-title">
+        <i class="pi pi-chart-bar mr-2 text-primary"></i>
+        Tableau de bord
+      </h1>
+      <p class="page-subtitle">Vue générale en temps réel</p>
+    </div>
+    <button pButton label="Nouvelle vente" icon="pi pi-plus" routerLink="/ventes"></button>
+  </div>
+
+  <!-- NUEVO FLUJO DE CONTROL: @if / @else -->
+  @if (isLoading()) {
+    <!-- LOADING SKELETON -->
+    <div class="kpi-grid">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <p-skeleton height="90px" borderRadius="12px"></p-skeleton>
+      }
+    </div>
+  } @else {
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-icon"><i class="pi pi-heart"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">{{ totalMedicaments() }}</div>
+          <div class="kpi-label">Médicaments</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-green">
+        <div class="kpi-icon"><i class="pi pi-shopping-cart"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">{{ nombreVentesJour() }}</div>
+          <div class="kpi-label">Ventes aujourd'hui</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon"><i class="pi pi-wallet"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">{{ formatMontant(chiffreAffaires()) }}</div>
+          <div class="kpi-label">Chiffre d'affaires</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-red">
+        <div class="kpi-icon"><i class="pi pi-exclamation-triangle"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">{{ stockCritique() }}</div>
+          <div class="kpi-label">Stock critique</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-icon"><i class="pi pi-box"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">{{ formatMontant(valeurStock()) }}</div>
+          <div class="kpi-label">Valeur stock</div>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-cyan">
+        <div class="kpi-icon"><i class="pi pi-check-circle"></i></div>
+        <div class="kpi-body">
+          <div class="kpi-value">{{ tauxDisponibilite() }}%</div>
+          <div class="kpi-label">Disponibilité</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CHARTS + ALERTES -->
+    <div class="content-grid">
+
+      <!-- Donut chart -->
+      <div class="card">
+        <div class="card-title">
+          <i class="pi pi-chart-pie mr-2"></i>
+          Médicaments par catégorie
+        </div>
+        <div style="height: 260px;">
+          <p-chart type="doughnut"
+                   [data]="donutData()"
+                   [options]="donutOptions()"
+                   height="260px">
+          </p-chart>
+        </div>
+      </div>
+
+      <!-- Stock critique con @for y @empty integrado -->
+      <div class="card">
+        <div class="card-title">
+          <i class="pi pi-exclamation-triangle mr-2 text-danger"></i>
+          Stock critique
+          <span class="count-badge">{{ medicamentsCritiques().length }}</span>
+        </div>
+        <div class="alert-list">
+          @for (m of medicamentsCritiques(); track m.id) {
+            <div class="alert-item">
+              <div class="alert-dot dot-red"></div>
+              <div class="alert-info">
+                <div class="alert-name">{{ m.nom }}</div>
+                <div class="alert-sub">
+                  Stock: {{ m.quantiteStock }} / Seuil: {{ m.seuilAlerte }}
+                </div>
+              </div>
+              <p-tag [value]="m.quantiteStock + ' unités'" severity="danger" styleClass="ml-auto"></p-tag>
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <i class="pi pi-check-circle text-success"></i>
+              <span>Tous les stocks sont OK</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Médicaments expirants -->
+      <div class="card">
+        <div class="card-title">
+          <i class="pi pi-calendar mr-2 text-warning"></i>
+          Expire bientôt
+          <span class="count-badge">{{ medicamentsExpirants().length }}</span>
+        </div>
+        <div class="alert-list">
+          @for (m of medicamentsExpirants(); track m.id) {
+            <div class="alert-item">
+              <div class="alert-dot dot-amber"></div>
+              <div class="alert-info">
+                <div class="alert-name">{{ m.nom }}</div>
+                <div class="alert-sub">
+                  Expire le {{ formatDate(m.dateExpiration!) }}
+                </div>
+              </div>
+              <p-tag value="Urgent" severity="warn" styleClass="ml-auto"></p-tag>
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <i class="pi pi-check-circle text-success"></i>
+              <span>Aucune expiration proche</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Dernières ventes -->
+      <div class="card">
+        <div class="card-title">
+          <i class="pi pi-shopping-cart mr-2 text-success"></i>
+          Dernières ventes
+        </div>
+        <div class="ventes-list">
+          @for (v of dernieresVentes(); track v.id) {
+            <div class="vente-item">
+              <div class="vente-info">
+                <div class="vente-patient">
+                  <i class="pi pi-user mr-1"></i>
+                  {{ v.patientNom || 'Anonyme' }}
+                </div>
+                <div class="vente-ref">{{ v.numeroFacture }}</div>
+              </div>
+              <div class="vente-right">
+                <div class="vente-montant">{{ formatMontant(v.montantTotal) }}</div>
+                <p-tag [value]="v.statut" [severity]="v.statut === 'VALIDEE' ? 'success' : 'danger'"></p-tag>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <i class="pi pi-inbox"></i>
+              <span>Aucune vente aujourd'hui</span>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+</div>

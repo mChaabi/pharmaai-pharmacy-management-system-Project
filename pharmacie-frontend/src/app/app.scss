@@ -1,0 +1,34 @@
+
+
+
+// src/styles.scss (ou src/app/styles.scss selon ton angular.json)
+@import "primeicons/primeicons.css";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+  background-color: #f8fafc; // Un fond gris très clair moderne pour contraster avec tes cartes blanches
+  color: #334155;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Classe utilitaire pour uniformiser les titres de tes pages features
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+// src/app/app.component.scss
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; // Le défilement sera géré en interne par le layout de travail
+}

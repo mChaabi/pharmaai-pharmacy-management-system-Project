@@ -1,0 +1,23 @@
+<div class="layout-wrapper"
+  [class.sidebar-collapsed]="sidebarCollapsed">
+
+  <!-- Sidebar fixe à gauche -->
+  <app-sidebar
+    [collapsed]="sidebarCollapsed">
+  </app-sidebar>
+
+  <!-- Zone principale droite -->
+  <div class="layout-main">
+
+    <!-- Topbar fixe en haut -->
+    <app-topbar
+      (onMenuToggle)="toggleSidebar()">
+    </app-topbar>
+
+    <!-- Contenu de la page active -->
+    <div class="layout-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>

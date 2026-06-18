@@ -1,0 +1,208 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="patients-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-users mr-2 text-primary"></i>
+      Patients
+    </h1>
+    <button pButton label="Nouveau patient"
+      icon="pi pi-plus" (click)="ouvrirCreation()">
+    </button>
+  </div>
+
+  <!-- RECHERCHE -->
+  <div class="search-bar">
+    <i class="pi pi-search"></i>
+    <input type="text" pInputText
+      [(ngModel)]="searchText"
+      placeholder="Rechercher par nom, téléphone..."
+      class="search-input" />
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <p-table [value]="patientsFiltres"
+      [loading]="isLoading"
+      [paginator]="true" [rows]="10"
+      stripedRows styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom complet</th>
+          <th>Téléphone</th>
+          <th>Âge</th>
+          <th>CIN</th>
+          <th>Allergies</th>
+          <th>Assurance</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-p>
+        <tr>
+          <td>
+            <div class="patient-name">
+              <i class="pi pi-user-circle patient-avatar"
+                [class.avatar-f]="p.sexe === 'F'">
+              </i>
+              <div>
+                <div class="font-bold">{{ p.nom }} {{ p.prenom }}</div>
+                <div class="text-muted">{{ p.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td>{{ p.telephone }}</td>
+          <td>
+            <span *ngIf="p.dateNaissance">
+              {{ getAge(p.dateNaissance) }} ans
+            </span>
+          </td>
+          <td>{{ p.cin }}</td>
+          <td>
+            <p-tag *ngIf="p.allergies"
+              [value]="p.allergies"
+              severity="danger"
+              pTooltip="Allergie connue">
+            </p-tag>
+            <span *ngIf="!p.allergies" class="text-muted">—</span>
+          </td>
+          <td>
+            <p-tag *ngIf="p.numeroAssurance"
+              [value]="p.numeroAssurance"
+              severity="info">
+            </p-tag>
+          </td>
+          <td>
+            <div class="actions">
+              <button pButton icon="pi pi-pencil"
+                class="p-button-sm p-button-text"
+                (click)="ouvrirModification(p)"
+                pTooltip="Modifier">
+              </button>
+              <button pButton icon="pi pi-trash"
+                class="p-button-sm p-button-text p-button-danger"
+                (click)="confirmerSuppression(p)"
+                pTooltip="Supprimer">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="empty">
+        <tr>
+          <td colspan="7" class="text-center p-4">
+            Aucun patient trouvé
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- DIALOG -->
+  <p-dialog
+    [header]="isEditing ? 'Modifier patient' : 'Nouveau patient'"
+    [(visible)]="dialogVisible"
+    [modal]="true" [style]="{ width: '650px' }"
+    [draggable]="false">
+
+    <div class="form-body" [formGroup]="form">
+
+      <!-- Nom + Prénom -->
+      <div class="field-row">
+        <div class="field">
+          <label>Nom *</label>
+          <input pInputText formControlName="nom"
+            placeholder="Nom de famille" class="w-full" />
+        </div>
+        <div class="field">
+          <label>Prénom *</label>
+          <input pInputText formControlName="prenom"
+            placeholder="Prénom" class="w-full" />
+        </div>
+      </div>
+
+      <!-- Téléphone + Email -->
+      <div class="field-row">
+        <div class="field">
+          <label>Téléphone *</label>
+          <input pInputText formControlName="telephone"
+            placeholder="0661234567" class="w-full" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input pInputText formControlName="email"
+            placeholder="email@gmail.com" class="w-full" />
+        </div>
+      </div>
+
+      <!-- Date naissance + Sexe -->
+      <div class="field-row">
+        <div class="field">
+          <label>Date de naissance</label>
+          <p-datepicker formControlName="dateNaissance"
+            [showIcon]="true" dateFormat="dd/mm/yy"
+            [style]="{ width: '100%' }" appendTo="body">
+          </p-datepicker>
+        </div>
+        <div class="field">
+          <label>Sexe</label>
+          <p-select [options]="sexeOptions"
+            optionLabel="label" optionValue="value"
+            formControlName="sexe"
+            placeholder="Choisir..." [style]="{ width: '100%' }">
+          </p-select>
+        </div>
+      </div>
+
+      <!-- CIN + Assurance -->
+      <div class="field-row">
+        <div class="field">
+          <label>CIN</label>
+          <input pInputText formControlName="cin"
+            placeholder="AB123456" class="w-full" />
+        </div>
+        <div class="field">
+          <label>N° Assurance</label>
+          <input pInputText formControlName="numeroAssurance"
+            placeholder="CNSS-XXXXX" class="w-full" />
+        </div>
+      </div>
+
+      <!-- Allergies -->
+      <div class="field">
+        <label>Allergies connues</label>
+        <textarea pTextarea formControlName="allergies"
+          placeholder="Ex: Pénicilline, Aspirine..."
+          rows="2" class="w-full">
+        </textarea>
+      </div>
+
+      <!-- Maladies chroniques -->
+      <div class="field">
+        <label>Maladies chroniques</label>
+        <textarea pTextarea formControlName="maladiesChroniques"
+          placeholder="Ex: Diabète type 2, HTA..."
+          rows="2" class="w-full">
+        </textarea>
+      </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Annuler" severity="secondary"
+        [outlined]="true" (onClick)="dialogVisible = false">
+      </p-button>
+      <p-button
+        [label]="isEditing ? 'Modifier' : 'Créer'"
+        icon="pi pi-check"
+        (onClick)="sauvegarder()">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+</div>

@@ -1,0 +1,165 @@
+<div class="topbar">
+
+  <!-- ─── GAUCHE : Toggle + Titre ─────────────────────── -->
+  <div class="topbar-left">
+
+    <!-- Bouton toggle sidebar -->
+    <button class="topbar-btn"
+      (click)="toggleMenu()"
+      pTooltip="Toggle menu"
+      tooltipPosition="bottom">
+      <i class="pi pi-bars"></i>
+    </button>
+
+    <!-- Titre + fil d'Ariane -->
+    <div class="topbar-brand">
+      <span class="brand-name">PharmaAI</span>
+      <span class="brand-sep">/</span>
+      <span class="brand-page">Pharmacie Centrale</span>
+    </div>
+
+  </div>
+
+  <!-- ─── CENTRE : Stats rapides ───────────────────────── -->
+  <div class="topbar-stats">
+
+    <div class="stat-item">
+      <i class="pi pi-shopping-cart stat-icon text-primary"></i>
+      <div class="stat-body">
+        <div class="stat-value">{{ nombreVentesJour }}</div>
+        <div class="stat-label">Ventes/jour</div>
+      </div>
+    </div>
+
+    <div class="stat-divider"></div>
+
+    <div class="stat-item">
+      <i class="pi pi-wallet stat-icon text-success"></i>
+      <div class="stat-body">
+        <div class="stat-value">
+          {{ chiffreAffairesJour.toFixed(0) }} MAD
+        </div>
+        <div class="stat-label">CA aujourd'hui</div>
+      </div>
+    </div>
+
+    <div class="stat-divider"></div>
+
+    <div class="stat-item">
+      <i class="pi pi-exclamation-triangle stat-icon text-danger"
+        *ngIf="medicamentsCritiques.length > 0">
+      </i>
+      <i class="pi pi-check-circle stat-icon text-success"
+        *ngIf="medicamentsCritiques.length === 0">
+      </i>
+      <div class="stat-body">
+        <div class="stat-value"
+          [class.text-danger]="medicamentsCritiques.length > 0">
+          {{ medicamentsCritiques.length }}
+        </div>
+        <div class="stat-label">Stock critique</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── DROITE : Actions ─────────────────────────────── -->
+  <div class="topbar-right">
+
+    <!-- Bouton notifications avec badge -->
+    <button class="topbar-btn notif-btn"
+      (click)="toggleNotifications()"
+      pTooltip="Notifications"
+      tooltipPosition="bottom">
+      <i class="pi pi-bell"></i>
+      <span class="notif-badge" *ngIf="unreadCount > 0">
+        {{ unreadCount > 9 ? '9+' : unreadCount }}
+      </span>
+    </button>
+
+    <!-- Divider -->
+    <div class="topbar-divider"></div>
+
+    <!-- Profil utilisateur -->
+    <div class="user-profile">
+      <div class="user-avatar">
+        <i class="pi pi-user"></i>
+      </div>
+      <div class="user-info">
+        <div class="user-name">Admin</div>
+        <div class="user-role">Pharmacien</div>
+      </div>
+      <i class="pi pi-chevron-down user-chevron"></i>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ─── PANEL NOTIFICATIONS ──────────────────────────── -->
+<p-drawer
+  [(visible)]="notifVisible"
+  position="right"
+  [style]="{ width: '360px' }"
+  header="Notifications">
+
+  <ng-template pTemplate="header">
+    <div class="notif-header">
+      <span class="notif-title">
+        <i class="pi pi-bell mr-2"></i>
+        Notifications
+      </span>
+      <span class="notif-count" *ngIf="unreadCount > 0">
+        {{ unreadCount }} non lues
+      </span>
+    </div>
+  </ng-template>
+
+  <div class="notif-panel">
+
+    <!-- Action : tout marquer comme lu -->
+    <div class="notif-actions" *ngIf="unreadCount > 0">
+      <button pButton label="Tout marquer comme lu"
+        icon="pi pi-check"
+        class="p-button-text p-button-sm p-button-secondary"
+        (click)="marquerToutesLues()">
+      </button>
+    </div>
+
+    <!-- Liste des notifications -->
+    <div class="notif-list">
+
+      <div *ngFor="let notif of notifications"
+        class="notif-item"
+        [class.unread]="!notif.read"
+        (click)="marquerCommeLue(notif)">
+
+        <!-- Icône colorée -->
+        <div class="notif-icon"
+          [class.icon-danger]="notif.type === 'danger'"
+          [class.icon-warn]="notif.type === 'warn'"
+          [class.icon-info]="notif.type === 'info'">
+          <i [class]="notif.icon"></i>
+        </div>
+
+        <!-- Contenu -->
+        <div class="notif-content">
+          <div class="notif-message">{{ notif.message }}</div>
+          <div class="notif-time">{{ getTimeAgo(notif.time) }}</div>
+        </div>
+
+        <!-- Point non lu -->
+        <div class="unread-dot" *ngIf="!notif.read"></div>
+
+      </div>
+
+      <!-- Vide -->
+      <div class="notif-empty" *ngIf="notifications.length === 0">
+        <i class="pi pi-inbox"></i>
+        <span>Aucune notification</span>
+      </div>
+
+    </div>
+
+  </div>
+</p-drawer>

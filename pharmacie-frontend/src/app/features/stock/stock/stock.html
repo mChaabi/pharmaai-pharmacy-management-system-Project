@@ -1,0 +1,148 @@
+<p-toast></p-toast>
+
+<div class="stock-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="pi pi-box mr-2 text-primary"></i>
+      Gestion du Stock
+    </h1>
+    <button pButton label="Entrée stock"
+      icon="pi pi-plus" (click)="ouvrirEntree()">
+    </button>
+  </div>
+
+  <!-- KPI CARDS STOCK -->
+  <div class="kpi-grid" *ngIf="dashboard">
+    <div class="kpi-card kpi-blue">
+      <div class="kpi-icon"><i class="pi pi-heart"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">{{ dashboard.totalMedicaments }}</div>
+        <div class="kpi-label">Total médicaments</div>
+      </div>
+    </div>
+    <div class="kpi-card kpi-red">
+      <div class="kpi-icon"><i class="pi pi-exclamation-triangle"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">{{ dashboard.stockCritique }}</div>
+        <div class="kpi-label">Stock critique</div>
+      </div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-icon"><i class="pi pi-wallet"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">
+         {{ dashboard.valeurTotaleStock.toFixed(0) }} MAD
+        </div>
+        <div class="kpi-label">Valeur totale stock</div>
+      </div>
+    </div>
+    <div class="kpi-card kpi-cyan">
+      <div class="kpi-icon"><i class="pi pi-check-circle"></i></div>
+      <div class="kpi-body">
+        <div class="kpi-value">{{ dashboard.tauxDisponibilite }}%</div>
+        <div class="kpi-label">Taux disponibilité</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE MOUVEMENTS -->
+  <div class="card">
+    <div class="card-title">
+      <i class="pi pi-list mr-2"></i>
+      Historique des mouvements
+    </div>
+    <p-table [value]="mouvements"
+      [loading]="isLoading"
+      [paginator]="true" [rows]="10"
+      stripedRows styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Médicament</th>
+          <th>Type</th>
+          <th>Quantité</th>
+          <th>Stock avant</th>
+          <th>Stock après</th>
+          <th>Motif</th>
+          <th>Date</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-m>
+        <tr>
+          <td class="font-bold">{{ m.medicament?.nom }}</td>
+          <td>
+            <p-tag [value]="m.type"
+              [severity]="getTypeSeverity(m.type)">
+            </p-tag>
+          </td>
+          <td>
+            <span [class.text-success]="m.type === 'ENTREE'"
+                  [class.text-danger]="m.type === 'SORTIE'">
+              {{ m.type === 'ENTREE' ? '+' : '-' }}{{ m.quantite }}
+            </span>
+          </td>
+          <td>{{ m.stockAvant }}</td>
+          <td>{{ m.stockApres }}</td>
+          <td class="text-muted">{{ m.motif }}</td>
+          <td>{{ m.dateMouvement | date:'dd/MM/yyyy HH:mm' }}</td>
+        </tr>
+      </ng-template>
+
+    </p-table>
+  </div>
+
+  <!-- DIALOG ENTRÉE STOCK -->
+  <p-dialog header="📦 Entrée de stock"
+    [(visible)]="dialogVisible"
+    [modal]="true" [style]="{ width: '500px' }"
+    [draggable]="false">
+
+    <div class="form-body">
+
+      <div class="field">
+        <label>Médicament *</label>
+        <p-select [options]="medicamentOptions"
+          optionLabel="label" optionValue="value"
+          [(ngModel)]="selectedMedicamentId"
+          placeholder="Choisir un médicament..."
+          [filter]="true" [style]="{ width: '100%' }">
+        </p-select>
+      </div>
+
+      <div class="field">
+        <label>Quantité à ajouter *</label>
+        <p-inputnumber [(ngModel)]="quantite"
+          [min]="1" [showButtons]="true"
+          [style]="{ width: '100%' }">
+        </p-inputnumber>
+      </div>
+
+      <div class="field">
+        <label>Motif</label>
+        <input pInputText [(ngModel)]="motif"
+          placeholder="Commande fournisseur, Don..."
+          class="w-full" />
+      </div>
+
+      <div class="field">
+        <label>Référence commande</label>
+        <input pInputText [(ngModel)]="refCommande"
+          placeholder="CMD-2026-001" class="w-full" />
+      </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Annuler" severity="secondary"
+        [outlined]="true" (onClick)="dialogVisible = false">
+      </p-button>
+      <p-button label="Valider l'entrée"
+        icon="pi pi-check" (onClick)="validerEntree()">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+</div>

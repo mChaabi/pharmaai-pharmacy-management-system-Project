@@ -1,0 +1,72 @@
+<div class="sidebar" [class.collapsed]="collapsed">
+
+  <!-- ─── LOGO ──────────────────────────────────────────── -->
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <i class="pi pi-heart"></i>
+    </div>
+    <div class="logo-text" *ngIf="!collapsed">
+      <span class="logo-name">PharmaAI</span>
+      <span class="logo-sub">Pharmacie Pro</span>
+    </div>
+  </div>
+
+  <!-- ─── NAVIGATION ───────────────────────────────────── -->
+  <nav class="sidebar-nav">
+
+    <div *ngFor="let section of menuSections" class="nav-section">
+
+      <!-- Label de section (masqué si collapsed) -->
+      <div class="section-label" *ngIf="!collapsed">
+        {{ section.label }}
+      </div>
+
+      <!-- Items du menu -->
+      <a *ngFor="let item of section.items"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+        class="nav-item"
+        [pTooltip]="collapsed ? item.label : ''"
+        tooltipPosition="right">
+
+        <!-- Icône -->
+        <div class="nav-icon">
+          <i class="pi {{ item.icon }}"></i>
+        </div>
+
+        <!-- Label (masqué si collapsed) -->
+        <span class="nav-label" *ngIf="!collapsed">
+          {{ item.label }}
+        </span>
+
+        <!-- Badge alertes -->
+        <span
+          *ngIf="item['badge'] && item['badge'] > 0 && !collapsed"
+          class="nav-badge">
+          {{ item['badge'] }}
+        </span>
+
+        <!-- Badge collapsed (point rouge) -->
+        <span
+          *ngIf="item['badge'] && item['badge'] > 0 && collapsed"
+          class="nav-badge-dot">
+        </span>
+
+      </a>
+    </div>
+
+  </nav>
+
+  <!-- ─── FOOTER ────────────────────────────────────────── -->
+  <div class="sidebar-footer">
+    <div class="footer-avatar">
+      <i class="pi pi-user"></i>
+    </div>
+    <div class="footer-info" *ngIf="!collapsed">
+      <div class="footer-name">Pharmacien</div>
+      <div class="footer-role">Administrateur</div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,262 @@
+// ─── Topbar principal ─────────────────────────────────────
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 1.2rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  gap: 1rem;
+  z-index: 100;
+}
+
+// ─── Gauche ───────────────────────────────────────────────
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+}
+
+.brand-name {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.brand-sep { color: #cbd5e1; }
+
+.brand-page { color: #64748b; }
+
+// ─── Centre : Stats ───────────────────────────────────────
+.topbar-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 6px 16px;
+
+  @media (max-width: 768px) { display: none; }
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-icon { font-size: 1rem; }
+.stat-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 28px;
+  background: #e2e8f0;
+}
+
+// ─── Bouton générique topbar ──────────────────────────────
+.topbar-btn {
+  width: 36px; height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 1rem;
+  transition: all 0.15s;
+  position: relative;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+  }
+}
+
+// Badge notifications
+.notif-badge {
+  position: absolute;
+  top: 2px; right: 2px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.62rem;
+  font-weight: 700;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+}
+
+// ─── Droite ───────────────────────────────────────────────
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.topbar-divider {
+  width: 1px; height: 24px;
+  background: #e2e8f0;
+  margin: 0 4px;
+}
+
+// Profil utilisateur
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: #f1f5f9; }
+}
+
+.user-avatar {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+
+  i { color: white; font-size: 0.85rem; }
+}
+
+.user-name  {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.user-role {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.user-chevron {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+// ─── Panel Notifications ──────────────────────────────────
+.notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.notif-title {
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.notif-count {
+  background: #fef2f2;
+  color: #ef4444;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 500;
+}
+
+.notif-panel { display: flex; flex-direction: column; gap: 8px; }
+
+.notif-actions {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+
+  &:hover { background: #f8fafc; }
+
+  &.unread { background: #eff6ff; }
+}
+
+.notif-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+
+  &.icon-danger { background: #fef2f2; color: #ef4444; }
+  &.icon-warn   { background: #fffbeb; color: #f59e0b; }
+  &.icon-info   { background: #eff6ff; color: #3b82f6; }
+}
+
+.notif-content { flex: 1; }
+.notif-message {
+  font-size: 0.83rem;
+  color: #374151;
+  line-height: 1.4;
+}
+.notif-time {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+.unread-dot {
+  width: 8px; height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 2rem;
+  color: #94a3b8;
+  i { font-size: 2rem; }
+  span { font-size: 0.85rem; }
+}
+
+// ─── Couleurs utilitaires ─────────────────────────────────
+.text-primary { color: #3b82f6; }
+.text-success { color: #22c55e; }
+.text-danger  { color: #ef4444; }
