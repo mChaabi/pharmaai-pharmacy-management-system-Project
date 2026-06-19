@@ -11,9 +11,10 @@ export interface MouvementStock {
     utilisateur?: string;
 }
 
+// ✅ Noms identiques au JSON backend
 export interface StockDashboard {
-    totalMedicaments: number;
-    stockCritique: number;
-    valeurTotaleStock: number;
-    tauxDisponibilite: number;
+    stockCritique:      number;  // ← pas stockCritique
+    totalMedicaments:   number;
+    tauxDisponibilite:  number;
+    valeurTotaleStock:  number;  // ← pas valeurTotaleStock
 }

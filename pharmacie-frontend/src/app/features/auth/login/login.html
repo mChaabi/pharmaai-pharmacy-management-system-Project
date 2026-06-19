@@ -1,0 +1,34 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <i class="pi pi-heart"></i>
+      <span>PharmaAI</span>
+    </div>
+
+    <h2>Connexion</h2>
+    <p class="subtitle">Accédez à votre espace pharmacie</p>
+
+    <p-message *ngIf="errorMessage" severity="error"
+      [text]="errorMessage" styleClass="w-full mb-3">
+    </p-message>
+
+    <div class="field">
+      <label>Email</label>
+      <input pInputText [(ngModel)]="email"
+        placeholder="admin@pharma.com" class="w-full" />
+    </div>
+
+    <div class="field">
+      <label>Mot de passe</label>
+      <p-password [(ngModel)]="password"
+        [feedback]="false" [toggleMask]="true"
+        styleClass="w-full" inputStyleClass="w-full">
+      </p-password>
+    </div>
+
+    <button pButton label="Se connecter"
+      icon="pi pi-sign-in" class="w-full"
+      [loading]="isLoading" (click)="login()">
+    </button>
+  </div>
+</div>

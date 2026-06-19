@@ -1,5 +1,6 @@
 package pharmacie_backend.module.vente.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,22 +27,26 @@ public interface VenteRepository extends JpaRepository<Vente, UUID> {
     );
 
     // Chiffre d'affaires du jour
-    @Query(value = "SELECT COALESCE(SUM(montant_total), 0) FROM vente WHERE CAST(date_vente AS DATE) = CURRENT_DATE", nativeQuery = true)
+    // ✅ APRÈS — nom correct de l'entité Java
+    @Query("""
+    SELECT COALESCE(SUM(v.montantTotal), 0)
+    FROM Vente v
+    WHERE CAST(v.dateVente AS date) = CURRENT_DATE
+    AND v.statut = 'VALIDEE'
+""")
     Double chiffreAffairesJour();
 
     // Nombre de ventes aujourd'hui
     @Query("""
-        SELECT COUNT(v) FROM Vente v
-        WHERE CAST(v.dateVente AS date) = CURRENT_DATE
-    """)
+    SELECT COUNT(v) FROM Vente v
+    WHERE CAST(v.dateVente AS date) = CURRENT_DATE
+""")
     Long nombreVentesJour();
 
     // Dernières ventes (pour le dashboard)
     @Query("""
-        SELECT v FROM Vente v
-        ORDER BY v.dateVente DESC
-    """)
-    List<Vente> findDernieresVentes(
-            org.springframework.data.domain.Pageable pageable
-    );
+    SELECT v FROM Vente v
+    ORDER BY v.dateVente DESC
+""")
+    List<Vente> findDernieresVentes(Pageable pageable);
 }

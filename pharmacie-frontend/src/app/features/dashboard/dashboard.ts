@@ -70,6 +70,7 @@ export class DashboardComponent implements OnInit {
         this.dernieresVentes.set(statsVentes?.dernieresVentes ?? []);
         this.valeurStock.set(stockDash?.valeurTotaleStock ?? 0);
         this.tauxDisponibilite.set(stockDash?.tauxDisponibilite ?? 0);
+        this.stockCritique.set(stockDash?.stockCritique ?? 0);
 
         this.buildDonut(medicaments);
         this.isLoading.set(false);
