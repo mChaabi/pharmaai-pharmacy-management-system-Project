@@ -7,6 +7,9 @@ import pharmacie_backend.module.auth.dto.*;
 import pharmacie_backend.module.auth.entity.*;
 import pharmacie_backend.module.auth.repository.UserRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -55,5 +58,20 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+    }
+
+
+    // ─── Lister tous les utilisateurs ──────────────────────
+    public List<UserDTO> listerTous() {
+        return userRepository.findAll()
+                .stream()
+                .map(u -> new UserDTO(
+                        u.getId(),
+                        u.getEmail(),
+                        u.getNomComplet(),
+                        u.getRole().name(),
+                        u.isActif()
+                ))
+                .collect(Collectors.toList());
     }
 }

@@ -260,3 +260,39 @@
 .text-primary { color: #3b82f6; }
 .text-success { color: #22c55e; }
 .text-danger  { color: #ef4444; }
+
+
+.user-profile {
+  position: relative; // ✅ Nécessaire pour positionner le dropdown
+}
+
+.profil-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  min-width: 180px;
+  z-index: 1000;
+  padding: 6px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #ef4444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  i { font-size: 1rem; }
+
+  &:hover {
+    background: #fef2f2;
+  }
+}

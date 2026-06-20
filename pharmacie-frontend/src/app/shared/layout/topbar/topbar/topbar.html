@@ -4,10 +4,7 @@
   <div class="topbar-left">
 
     <!-- Bouton toggle sidebar -->
-    <button class="topbar-btn"
-      (click)="toggleMenu()"
-      pTooltip="Toggle menu"
-      tooltipPosition="bottom">
+    <button class="topbar-btn" (click)="toggleMenu()" pTooltip="Toggle menu" tooltipPosition="bottom">
       <i class="pi pi-bars"></i>
     </button>
 
@@ -46,15 +43,12 @@
     <div class="stat-divider"></div>
 
     <div class="stat-item">
-      <i class="pi pi-exclamation-triangle stat-icon text-danger"
-        *ngIf="medicamentsCritiques.length > 0">
+      <i class="pi pi-exclamation-triangle stat-icon text-danger" *ngIf="medicamentsCritiques.length > 0">
       </i>
-      <i class="pi pi-check-circle stat-icon text-success"
-        *ngIf="medicamentsCritiques.length === 0">
+      <i class="pi pi-check-circle stat-icon text-success" *ngIf="medicamentsCritiques.length === 0">
       </i>
       <div class="stat-body">
-        <div class="stat-value"
-          [class.text-danger]="medicamentsCritiques.length > 0">
+        <div class="stat-value" [class.text-danger]="medicamentsCritiques.length > 0">
           {{ medicamentsCritiques.length }}
         </div>
         <div class="stat-label">Stock critique</div>
@@ -67,9 +61,7 @@
   <div class="topbar-right">
 
     <!-- Bouton notifications avec badge -->
-    <button class="topbar-btn notif-btn"
-      (click)="toggleNotifications()"
-      pTooltip="Notifications"
+    <button class="topbar-btn notif-btn" (click)="toggleNotifications()" pTooltip="Notifications"
       tooltipPosition="bottom">
       <i class="pi pi-bell"></i>
       <span class="notif-badge" *ngIf="unreadCount > 0">
@@ -81,15 +73,25 @@
     <div class="topbar-divider"></div>
 
     <!-- Profil utilisateur -->
-    <div class="user-profile">
+    <!-- Profil utilisateur -->
+    <!-- Modifier le bouton profil -->
+<div class="user-profile" (click)="$event.stopPropagation(); toggleProfilMenu()">
       <div class="user-avatar">
         <i class="pi pi-user"></i>
       </div>
       <div class="user-info">
-        <div class="user-name">Admin</div>
-        <div class="user-role">Pharmacien</div>
+        <div class="user-name">{{ userName }}</div>
+        <div class="user-role">{{ userRole }}</div>
       </div>
       <i class="pi pi-chevron-down user-chevron"></i>
+
+      <!-- ✅ Menu déroulant -->
+      <div class="profil-dropdown" *ngIf="profilMenuVisible" (click)="$event.stopPropagation()">
+        <div class="dropdown-item" (click)="logout()">
+          <i class="pi pi-sign-out"></i>
+          <span>Se déconnecter</span>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -97,11 +99,7 @@
 </div>
 
 <!-- ─── PANEL NOTIFICATIONS ──────────────────────────── -->
-<p-drawer
-  [(visible)]="notifVisible"
-  position="right"
-  [style]="{ width: '360px' }"
-  header="Notifications">
+<p-drawer [(visible)]="notifVisible" position="right" [style]="{ width: '360px' }" header="Notifications">
 
   <ng-template pTemplate="header">
     <div class="notif-header">
@@ -119,25 +117,19 @@
 
     <!-- Action : tout marquer comme lu -->
     <div class="notif-actions" *ngIf="unreadCount > 0">
-      <button pButton label="Tout marquer comme lu"
-        icon="pi pi-check"
-        class="p-button-text p-button-sm p-button-secondary"
-        (click)="marquerToutesLues()">
+      <button pButton label="Tout marquer comme lu" icon="pi pi-check"
+        class="p-button-text p-button-sm p-button-secondary" (click)="marquerToutesLues()">
       </button>
     </div>
 
     <!-- Liste des notifications -->
     <div class="notif-list">
 
-      <div *ngFor="let notif of notifications"
-        class="notif-item"
-        [class.unread]="!notif.read"
+      <div *ngFor="let notif of notifications" class="notif-item" [class.unread]="!notif.read"
         (click)="marquerCommeLue(notif)">
 
         <!-- Icône colorée -->
-        <div class="notif-icon"
-          [class.icon-danger]="notif.type === 'danger'"
-          [class.icon-warn]="notif.type === 'warn'"
+        <div class="notif-icon" [class.icon-danger]="notif.type === 'danger'" [class.icon-warn]="notif.type === 'warn'"
           [class.icon-info]="notif.type === 'info'">
           <i [class]="notif.icon"></i>
         </div>
